@@ -14,3 +14,6 @@
 *.pyd
 __pycache__/
 $py.class
+
+
+._*

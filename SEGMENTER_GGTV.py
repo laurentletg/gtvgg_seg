@@ -129,14 +129,14 @@ class SemiAutoPheToolInstructionsWindow(qt.QWidget):
        self.segmenter.ClearPHESegment()
        self.close()
 
-class SEGMENTER_V2(ScriptedLoadableModule):
+class SEGMENTER_GGTV(ScriptedLoadableModule):
   """Uses ScriptedLoadableModule base class, available at:
   https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
   """
 
   def __init__(self, parent):
     ScriptedLoadableModule.__init__(self, parent)
-    self.parent.title = "SEGMENTER_V2"  # TODO: make this more human readable by adding spaces
+    self.parent.title = "SEGMENTER_GGTV"  # TODO: make this more human readable by adding spaces
     self.parent.categories = ["Examples"]  # TODO: set categories (folders where the module shows up in the module selector)
     self.parent.dependencies = []  # TODO: add here list of module names that this module requires
     self.parent.contributors = ["Delphine Pilon, An Ni Wu, Emmanuel Montagnon, Laurent Letourneau-Guillon"]  # TODO: replace with "Firstname Lastname (Organization)"
@@ -184,7 +184,7 @@ class Timer():
                 self.flag = False
 
 
-class SEGMENTER_V2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
+class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """Uses ScriptedLoadableModuleWidget base class, available at:
     https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
     """
@@ -241,7 +241,7 @@ class SEGMENTER_V2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
         # Create logic class. Logic implements all computations that should be possible to run
         # in batch mode, without a graphical user interface.
-        self.logic = SEGMENTER_V2Logic()
+        self.logic = SEGMENTER_GGTVLogic()
 
 
         # CONFIG - could be removed
@@ -1590,10 +1590,10 @@ class SEGMENTER_V2Widget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
 
 
-class SEGMENTER_V2Logic(ScriptedLoadableModuleLogic):
+class SEGMENTER_GGTVLogic(ScriptedLoadableModuleLogic):
     pass
 
-class SEGMENTER_V2Test(ScriptedLoadableModuleTest):
+class SEGMENTER_GGTVTest(ScriptedLoadableModuleTest):
   """
   This is the test case for your scripted module.
   Uses ScriptedLoadableModuleTest base class, available at:
@@ -1609,9 +1609,9 @@ class SEGMENTER_V2Test(ScriptedLoadableModuleTest):
     """Run as few or as many tests as needed here.
     """
     self.setUp()
-    self.test_SEGMENTER_V21()
+    self.test_SEGMENTER_GGTV1()
 
-  def test_SEGMENTER_V21(self):
+  def test_SEGMENTER_GGTV1(self):
     """ Ideally you should have several levels of tests.  At the lowest level
     tests should exercise the functionality of the logic with different inputs
     (both valid and invalid).  At higher levels your tests should emulate the

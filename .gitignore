@@ -1,0 +1,16 @@
+# DS Store 
+.DS_Store
+
+# idea
+.idea
+
+# vscode
+.vscode
+
+
+# python gitignore template
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+$py.class

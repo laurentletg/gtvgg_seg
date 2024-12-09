@@ -230,7 +230,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
         # Load widget from .ui file (created by Qt Designer).
         # Additional widgets can be instantiated manually and added to self.layout.
-        uiWidget = slicer.util.loadUI(self.resourcePath('UI/ICH_SEGMENTER_GGTV.ui'))
+        uiWidget = slicer.util.loadUI(self.resourcePath('UI/SEGMENTER_GGTV.ui'))
         self.layout.addWidget(uiWidget)
         self.ui = slicer.util.childWidgetVariables(uiWidget)
 

@@ -1,0 +1,33 @@
+default_volume_directory: '/Users/laurentletourneau-guillon/Dropbox (Personal)/CHUM/RECHERCHE/2020BahigENE/GGGTV_Bahig/GGGTV_Bahig/test_segmentation/Patients_to_annotate/output/final_data/vols'
+volume_extension: "*.nii.gz"
+regex_format_volume_load: "(.*).nii.gz"
+# how the id will be incorporated in the segmentation file maps to self.VOL_REGEX_PATTERN_PT_ID_INSTUID_SAVE
+regex_format_volume_save: "(.*).nii.gz"
+
+default_segmentation_directory: '/Users/laurentletourneau-guillon/Dropbox (Personal)/CHUM/RECHERCHE/2020BahigENE/GGGTV_Bahig/GGGTV_Bahig/test_segmentation/Patients_to_annotate/output/final_qc_output_5h13/segmentations_nii'
+segmentation_extension:  "*.nii.gz"
+regex_format_segmentation_load:  "^(\\d+)_.*"
+# regex_format_volume_save: "(.*).nii.gz"
+
+annotator_name : 'LLGtrois'
+annotator_degree : 4 # 0 is default and doest not contain anything,
+revision_step : 2 # 0 is default and doest not contain anything,
+
+KEYBOARD_SHORTCUTS:
+  - method: "keyboard_toggle_fill"
+    shortcut: "e"
+
+
+OUTLIER_THRESHOLD:
+  LOWER_BOUND: -100
+  UPPER_BOUND: 1000
+
+labels: # !!!make sure that PHE and ICH have no gap between bounds!!!
+  - name: "gtvgg"
+    value: 1
+    color_r: 0
+    color_g: 100
+    color_b: 255
+    lower_bound_HU: -100    
+    upper_bound_HU: 1000
+

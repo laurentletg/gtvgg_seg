@@ -509,7 +509,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       # Center image
       slicer.util.setSliceViewerLayers(background=self.VolumeNode, fit=True)
 
-      self.newSegmentation()
+      # self.newSegmentation()
       self.subjectHierarchy()
 
     # Getter method to get the segmentation node name    - Not sure if this is really useful here.
@@ -536,6 +536,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
     def onNextButton(self):
       # ----- ANW Addition ----- : Reset timer when change case and uncheck all checkboxes
+      # self.onSaveSegmentationButton()
       self.resetTimer()
       self.uncheckAllBoxes()
       self.clearTexts()
@@ -546,6 +547,9 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       self.currentCase_index = min(len(self.Cases)-1, self.currentCase_index+1)
       self.updateCaseAll()
       self.loadPatient()
+      self.load_mask_v2()
+      # switch to segment editor
+      # self.onPushButton_segmeditor()
 
 
     def newSegmentation(self):
@@ -573,7 +577,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
       displayNode = self.segmentationNode.GetDisplayNode()
       displayNode.SetAllSegmentsOpacity2DOutline(1)
-      displayNode.SetSliceIntersectionThickness(4)
+      displayNode.SetSliceIntersectionThickness(2)
       displayNode.SetOpacity2DFill(0)
 
     # Load all segments at once
@@ -916,20 +920,19 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       if not os.path.exists(folder_path):
           os.makedirs(folder_path)
 
-      if not os.path.isfile(file_path):
-          slicer.util.saveNode(node, file_path)
-      else:
-          msg = qt.QMessageBox()
-          msg.setWindowTitle('Save As')
-          msg.setText(f'The file {file_path} already exists \n Do you want to replace the existing file?')
-          msg.setIcon(qt.QMessageBox.Warning)
-          msg.setStandardButtons(qt.QMessageBox.Ok | qt.QMessageBox.Cancel)
-          msg.exec()
-          if msg.clickedButton() == msg.button(qt.QMessageBox.Ok):
-              slicer.util.saveNode(node, file_path)
-              return f'File saved as {file_path}'
-          else:
-              return "File not saved"
+      slicer.util.saveNode(node, file_path)
+      # else:
+      #     msg = qt.QMessageBox()
+      #     msg.setWindowTitle('Save As')
+      #     msg.setText(f'The file {file_path} already exists \n Do you want to replace the existing file?')
+      #     msg.setIcon(qt.QMessageBox.Warning)
+      #     msg.setStandardButtons(qt.QMessageBox.Ok | qt.QMessageBox.Cancel)
+      #     msg.exec()
+      #     if msg.clickedButton() == msg.button(qt.QMessageBox.Ok):
+      #         slicer.util.saveNode(node, file_path)
+      #         return f'File saved as {file_path}'
+      #     else:
+      #         return "File not saved"
 
     def onSaveSegmentationButton(self):
       #TODO: refactor this methods and it is way too long
@@ -959,7 +962,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
       #### SAVING CSV TIME #####
       # Save if annotator_name is not empty and timer started:
-      if self.annotator_name and self.time is not None:
+      if self.annotator_name is not None:
           # Save time to csv
           print("Saving time to csv")
           tag_str = "Case number, Annotator Name, Annotator degree, Revision step, Time"
@@ -1004,7 +1007,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
 
           ### SAVING SEGMENTATION FILES ####
-
+          self.segmentationNode.SetReferenceImageGeometryParameterFromVolumeNode(self.VolumeNode)
           self.outputSegmFile = os.path.join(self.output_dir,'segmentations',
                                                  "{}_{}_{}.seg.nrrd".format(output_file_pt_id_instanceUid, self.annotator_name, self.revision_step[0]))
           print(f'line 980 - outputTimeFile: {self.outputTimeFile}')
@@ -1027,14 +1030,10 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
               msgboxtime = qt.QMessageBox()
               msgboxtime.setText("Segmentation not saved : no annotator name !  \n Please save again with your name!")
               msgboxtime.exec()
-          elif self.time is None:
-              msgboxtime2 = qt.QMessageBox()
-              msgboxtime2.setText("Error: timer is not started for some unknown reason. Restart and save again. File not saved!")
-              msgboxtime2.exec()
 
 
       # Save volumes
-      self.save_statistics()
+      # self.save_statistics()
       # Update the color of the segment
       self.update_current_case_paths_by_segmented_volumes()
 
@@ -1071,18 +1070,18 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
     def load_mask_v2(self):
       # Get list of prediction names
-      msg_warning_delete_segm_node =qt.QMessageBox() # Typo correction
-      msg_warning_delete_segm_node.setText('This will delete the current segmentation. Do you want to continue?')
-      msg_warning_delete_segm_node.setIcon(qt.QMessageBox.Warning)
-      msg_warning_delete_segm_node.setStandardButtons(qt.QMessageBox.Ok | qt.QMessageBox.Cancel)
+      # msg_warning_delete_segm_node =qt.QMessageBox() # Typo correction
+      # msg_warning_delete_segm_node.setText('This will delete the current segmentation. Do you want to continue?')
+      # msg_warning_delete_segm_node.setIcon(qt.QMessageBox.Warning)
+      # msg_warning_delete_segm_node.setStandardButtons(qt.QMessageBox.Ok | qt.QMessageBox.Cancel)
       # if clikc ok, then delete the current segmentatio
-      msg_warning_delete_segm_node.setDefaultButton(qt.QMessageBox.Cancel)
-      response = msg_warning_delete_segm_node.exec() # calls remove node if ok is clicked
-      if response == qt.QMessageBox.Ok:
-          self.msg_warnig_delete_segm_node_clicked()
+      # msg_warning_delete_segm_node.setDefaultButton(qt.QMessageBox.Cancel)
+      # response = msg_warning_delete_segm_node.exec() # calls remove node if ok is clicked
+      # if response == qt.QMessageBox.Ok:
+      #     self.msg_warnig_delete_segm_node_clicked()
 
-      else:
-          return
+      # else:
+      #     return
 
       try:
             self.predictions_names = sorted([re.findall(self.SEGM_REGEX_PATTERN,os.path.split(i)[-1]) for i in self.predictions_paths])
@@ -1129,7 +1128,7 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
       displayNode = self.segmentationNode.GetDisplayNode()
       displayNode.SetAllSegmentsOpacity2DOutline(1)
-      displayNode.SetSliceIntersectionThickness(4)
+      displayNode.SetSliceIntersectionThickness(2)
 
 
     def convert_nifti_header_Segment(self):
@@ -1174,6 +1173,9 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         print(len(segmentations))
         print(self.SEGM_REGEX_PATTERN)
         print(os.path.basename(segmentations[0]))
+        regex_test = re.findall(self.SEGM_REGEX_PATTERN, os.path.basename(segmentations[0]))
+        print(regex_test)
+        
         segmented_IDs = [re.findall(self.SEGM_REGEX_PATTERN, os.path.basename(segmentation))[0] for segmentation in
                        segmentations]
         segmented_IDs = [os.path.basename(i) for i in segmented_IDs]
@@ -1509,19 +1511,9 @@ class SEGMENTER_GGTVWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       if not os.path.exists(output_dir_volumes_csv):
           os.makedirs(output_dir_volumes_csv)
       outputFilename = os.path.join(output_dir_volumes_csv, outputFilename)
-      if not os.path.isfile(outputFilename):
-          segStatLogic.exportToCSVFile(outputFilename)
-          print(f'Wrote segmentation file here {outputFilename}')
-      else:
-          msg = qt.QMessageBox()
-          msg.setWindowTitle('Save As')
-          msg.setText(f'The file {outputFilename} already exists \n Do you want to replace the existing file?')
-          msg.setIcon(qt.QMessageBox.Warning)
-          msg.setStandardButtons(qt.QMessageBox.Ok | qt.QMessageBox.Cancel)
-          msg.exec()
-          if msg.clickedButton() == msg.button(qt.QMessageBox.Ok):
-              segStatLogic.exportToCSVFile(outputFilename)
-              print(f'Wrote segmentation file here {outputFilename}')
+
+      segStatLogic.exportToCSVFile(outputFilename)
+      print(f'Wrote segmentation file here {outputFilename}')
 
 
       segStatLogic.exportToCSVFile(outputFilename)
